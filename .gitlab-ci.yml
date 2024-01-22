@@ -60,7 +60,7 @@ push_frontend_image:
 backend:
     image: golang:1.19
     tags:
-      - docker
+      - shell
     stage: build-backend
     script:
         - cd /builds/anupamdutta/devops-fullstack-app/backend
