@@ -1,49 +1,91 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+stages:
+    - trufflehog
+    - snyk
+    - build-frontend
+    - push-frontend
+    - build-backend
+    - push-backend
+    # - provision
 
-stages:          # List of stages for jobs, and their order of execution
-  - build
-  - test
-  - deploy
+# trufflehog_scan:
+#   image: python:3
+#   tags:
+#     - docker-runner
+#   stage: trufflehog
+#   script:
+#     - python3 -m venv venv
+#     - source venv/bin/activate
+#     - pip install truffleHog
+#     - trufflehog --entropy=True --json /builds/anupamdutta/devops-fullstack-app > trufflehog_results.json
+#   artifacts:
+#     paths:
+#       - trufflehog_results.json
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+# snyk:
+#     image: node:14
+#     tags:
+#       - shell
+#     stage: snyk
+#     script:
+#       - npm install -g snyk
+#       - snyk auth $SNYK_TOKEN
+#       - echo "running snyk test"
+#       - snyk test --all-projects | tee snyk_report.txt
+#       - echo "snyl test successful"
+#     artifacts:
+#       paths:
+#         - snyk_report.txt
+#     allow_failure: true
+
+# frontend:
+#     image: node:14
+#     tags:
+#       - docker-runner
+#     stage: build-frontend
+#     script:
+#         - cd /builds/anupamdutta/devops-fullstack-app/frontend/
+#         - npm install
+#         - npm run build
+
+push_frontend_image:
+  image: alpine
+  tags:
+    - shell
+  stage: push-frontend
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+      - docker login -u anupamdutta -p $CI_REGISTRY_TOKEN code.techverito.com:4567
+      - docker build -t code.techverito.com:4567/anupamdutta/devops-fullstack-app/frontend -f Dockerfile-frontend .
+      - docker push code.techverito.com:4567/anupamdutta/devops-fullstack-app/frontend
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+backend:
+    image: golang:1.19
+    tags:
+      - docker
+    stage: build-backend
+    script:
+        - cd /builds/anupamdutta/devops-fullstack-app/backend
+        - go mod download
+        - CGO_ENABLED=0 GOOS=linux go build -o app .
+push_backend_image:
+  image: alpine
+  tags:
+    - shell
+  stage: push-backend
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
+      - docker login -u anupamdutta -p $CI_REGISTRY_TOKEN code.techverito.com:4567
+      - docker build -t code.techverito.com:4567/anupamdutta/devops-fullstack-app/backend -f Dockerfile-backend .
+      - docker push code.techverito.com:4567/anupamdutta/devops-fullstack-app/backend
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
-  script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
-
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+# terraform:
+#   image: alpine
+#   tags:
+#     - shell
+#   stage: provision
+#   before_script:
+#     - mkdir -p ~/.aws
+#     - echo -e "[default]\naws_access_key_id=$AWS_ACCESS_KEY_ID\naws_secret_access_key=$AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
+#   script:
+#     - terraform init
+#     - terraform fmt
+#     - terraform plan -out tfplan
+#     - terraform apply --auto-approve tfplan
