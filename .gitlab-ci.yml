@@ -57,15 +57,15 @@ push_frontend_image:
       - docker build -t code.techverito.com:4567/anupamdutta/devops-fullstack-app/frontend -f Dockerfile-frontend .
       - docker push code.techverito.com:4567/anupamdutta/devops-fullstack-app/frontend
 
-backend:
-    image: golang:1.19
-    tags:
-      - shell
-    stage: build-backend
-    script:
-        - cd /builds/anupam.dutta753/devops-fullstack-app/backend
-        - go mod download
-        - CGO_ENABLED=0 GOOS=linux go build -o app .
+# backend:
+#     image: golang:1.19
+#     tags:
+#       - shell
+#     stage: build-backend
+#     script:
+#         - cd /builds/anupam.dutta753/devops-fullstack-app/backend
+#         - go mod download
+#         - CGO_ENABLED=0 GOOS=linux go build -o app .
 push_backend_image:
   image: alpine
   tags:
