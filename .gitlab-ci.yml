@@ -76,3 +76,6 @@ push_backend_image:
       - docker login -u anupam.dutta753 -p $GITLAB_TOKEN registry.gitlab.com
       - docker build -t registry.gitlab.com/anupam.dutta753/infrastructure/backend -f Dockerfile-backend .
       - docker push registry.gitlab.com/anupam.dutta753/infrastructure/backend
+
+
+      
