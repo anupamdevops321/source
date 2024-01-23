@@ -4,7 +4,7 @@ FROM golang:1.19 AS builder
 WORKDIR /app
 
 # Clone the repository
-RUN git clone https://github.com/anupamdevops321/devops-fullstack-app.git .
+RUN git clone https://gitlab.com/anupam.dutta753/devops-fullstack-app.git .
 
 # Set working directory to the backend folder
 WORKDIR /app/backend
