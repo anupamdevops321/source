@@ -57,7 +57,7 @@ push_frontend_image:
       - docker login -u anupam.dutta753 -p $GITLAB_TOKEN registry.gitlab.com
       - docker build -t registry.gitlab.com/anupam.dutta753/infrastructure/frontend -f Dockerfile-frontend .
       - docker push code.techverito.com:4567/anupamdutta/devops-fullstack-app/frontend
-
+      
 # backend:
 #     image: golang:1.19
 #     tags:
