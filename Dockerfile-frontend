@@ -4,7 +4,7 @@ FROM node:21 AS builder
 WORKDIR /app
 
 # Clone the repository
-RUN git clone https://github.com/anupamdevops321/source.git
+RUN git clone https://github.com/anupamdevops321/source.git .
 
 # Change to the frontend directory
 WORKDIR /app/devops-fullstack-app/frontend
