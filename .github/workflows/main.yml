@@ -30,3 +30,11 @@ jobs:
         run: |
           docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:latest -f Dockerfile-frontend --push .
           #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }} -f Dockerfile-frontend --push .
+
+      - name: Trigger Ansible Deployment workflow in Second Repository
+        if: success()
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT }}
+          repository: anupamdevops321/Deployment
+          event-type: trigger-ansible
