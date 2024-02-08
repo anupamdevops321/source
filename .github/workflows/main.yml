@@ -50,3 +50,4 @@ jobs:
           token: ${{ secrets.PAT }}
           repository: anupamdevops321/Deployment
           event-type: trigger-ansible
+          client-payload: '{"image_tag": "${{ steps.commit_hash.outputs.short_commit_hash }}"}'
