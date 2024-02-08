@@ -22,14 +22,26 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Get first 5 characters of commit hash
+        id: commit_hash
+        run: echo "::set-output name=short_commit_hash::$(echo $GITHUB_SHA | cut -c1-5)"
+
       - name: Build and push backend image
         run: |
-          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-1:latest -f Dockerfile-backend --push .
-          #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }} -f Dockerfile-backend --push .
+          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-backend --push .
+
       - name: Build and push frontend image
         run: |
-          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:latest -f Dockerfile-frontend --push .
-          #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }} -f Dockerfile-frontend --push .
+          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-frontend --push .
+
+      # - name: Build and push backend image
+      #   run: |
+      #     docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-1:latest -f Dockerfile-backend --push .
+      #     #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }} -f Dockerfile-backend --push .
+      # - name: Build and push frontend image
+      #   run: |
+      #     docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:latest -f Dockerfile-frontend --push .
+      #     #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }} -f Dockerfile-frontend --push .
 
       - name: Trigger Ansible Deployment workflow in Second Repository
         if: success()
