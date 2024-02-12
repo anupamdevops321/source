@@ -18,7 +18,8 @@ jobs:
            GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
            GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
            GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-           GITGUARDIAN_API_KEY: ${{ secrets.GGS_TOKEN }}
+           GITGUARDIAN_API_KEY: 6faAfcEadd3f3838dd6193DF8c2722C7d7FaeF2aAc01B7963f2c803ABbAcb45A52E5D08
+           # ${{ secrets.GGS_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
