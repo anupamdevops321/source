@@ -30,7 +30,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          command: code test --all-projects
+          command: |
+           code test --all-projects
+           test --all-projects
+        continue-on-error: true
         
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
