@@ -32,7 +32,7 @@ jobs:
 
       - name: Build and push frontend image
         run: |
-          docker buildx build --platform linux/amd64 --nno-cache -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-frontend --push .
+          docker buildx build --platform linux/amd64 --no-cache -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-frontend --push .
 
       - name: Trigger deployment pipeline
         if: success()
