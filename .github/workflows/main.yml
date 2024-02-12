@@ -20,8 +20,8 @@ jobs:
            GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
            GITGUARDIAN_API_KEY: ${{ secrets.GSS_TOKEN }}
 
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.11.0
+      - name: OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.1.0
         with:
          target: 'https://100.26.48.145'
       
