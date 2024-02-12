@@ -29,6 +29,8 @@ jobs:
         uses: snyk/actions@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test --all-projects
         
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
