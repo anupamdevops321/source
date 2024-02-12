@@ -28,26 +28,17 @@ jobs:
 
       - name: Build and push backend image
         run: |
-          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-backend --push .
+          docker buildx build --platform linux/amd64 --no-cache -t ${{ secrets.DOCKER_USERNAME }}/backend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-backend --push .
 
       - name: Build and push frontend image
         run: |
-          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-frontend --push .
+          docker buildx build --platform linux/amd64 --nno-cache -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:${{ steps.commit_hash.outputs.short_commit_hash }} -f Dockerfile-frontend --push .
 
-      # - name: Build and push backend image
-      #   run: |
-      #     docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-1:latest -f Dockerfile-backend --push .
-      #     #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }} -f Dockerfile-backend --push .
-      # - name: Build and push frontend image
-      #   run: |
-      #     docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-1:latest -f Dockerfile-frontend --push .
-      #     #docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }} -f Dockerfile-frontend --push .
-
-      - name: Trigger Ansible Deployment workflow in Second Repository
+      - name: Trigger deployment pipeline
         if: success()
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.PAT }}
           repository: anupamdevops321/Deployment
-          event-type: trigger-ansible
+          event-type: trigger-deployment
           client-payload: '{"image_tag": "${{ steps.commit_hash.outputs.short_commit_hash }}"}'
