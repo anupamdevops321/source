@@ -39,6 +39,9 @@ jobs:
         with:
           scan-type: 'repo'
           scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          
       - name: Save Trivy report as artifact
         uses: actions/upload-artifact@v2
         with:
